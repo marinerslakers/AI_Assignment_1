@@ -125,7 +125,23 @@ def find_path_dfs(maze):
     return "NO WAY!"
 
 def find_path_greedy(maze):
-
+    pr_queue = []
+    heappush(pr_queue, (0 + heuristic(start, goal), 0, "", start))
+    visited = set()
+    graph = maze2graph(maze)
+    while pr_queue:
+        _, cost, path, current = heappop(pr_queue)
+        if type(current) == list:
+            current = tuple(current[0])
+        if current == goal[0]:
+            output(path, maze)
+            return path
+        if current in visited:
+            continue
+        visited.add(current)
+        for direction, neighbour in graph[current]:
+            heappush(pr_queue, (heuristic(neighbour, goal), cost, path + direction, neighbour))
+    return "NO WAY!"
 
 def output(path, maze):
     pathArray = list(path)

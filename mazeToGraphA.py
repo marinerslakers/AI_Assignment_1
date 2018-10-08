@@ -71,18 +71,20 @@ def find_path_astar(maze):
     heappush(pr_queue, (0 + heuristic(start, goal), 0, "", start))
     visited = set()
     graph = maze2graph(maze)
+    expanded = 0
     while pr_queue:
         _, cost, path, current = heappop(pr_queue)
         if type(current) == list:
             current = tuple(current[0])
         if current == goal[0]:
-            output(path, maze)
+            output(path, maze, expanded)
             return path
         if current in visited:
             continue
         visited.add(current)
         for direction, neighbour in graph[current]:
             heappush(pr_queue, (cost + heuristic(neighbour, goal), cost + 1, path + direction, neighbour))
+        expanded += 1
     return "NO WAY!"
 
 
@@ -91,37 +93,40 @@ def find_path_bfs(maze):
     queue = deque([("", start)])
     visited = set()
     graph = maze2graph(maze)
+    expanded = 0
     while queue:
-        print('made it here')
         path, current = queue.popleft()
         if type(current) == list:
             current = tuple(current[0])
         if current == goal[0]:
-            output(path, maze)
+            output(path, maze, expanded)
             return path
         if current in visited:
             continue
         visited.add(current)
         for direction, neighbour in graph[current]:
             queue.append((path + direction, neighbour))
+        expanded += 1
     return "NO WAY!"
 
 def find_path_dfs(maze):
     stack = deque([("", start)])
     visited = set()
     graph = maze2graph(maze)
+    expanded = 0
     while stack:
         path, current = stack.pop()
         if type(current) == list:
             current = tuple(current[0])
         if current == goal[0]:
-            output(path,maze)
+            output(path,maze,expanded)
             return path
         if current in visited:
             continue
         visited.add(current)
         for direction, neighbour in graph[current[0],current[1]]:
             stack.append((path + direction, neighbour))
+        expanded += 1
     return "NO WAY!"
 
 def find_path_greedy(maze):
@@ -129,21 +134,23 @@ def find_path_greedy(maze):
     heappush(pr_queue, (0 + heuristic(start, goal), 0, "", start))
     visited = set()
     graph = maze2graph(maze)
+    expanded = 0
     while pr_queue:
         _, cost, path, current = heappop(pr_queue)
         if type(current) == list:
             current = tuple(current[0])
         if current == goal[0]:
-            output(path, maze)
+            output(path, maze, expanded)
             return path
         if current in visited:
             continue
         visited.add(current)
         for direction, neighbour in graph[current]:
             heappush(pr_queue, (heuristic(neighbour, goal), cost, path + direction, neighbour))
+        expanded += 1
     return "NO WAY!"
 
-def output(path, maze):
+def output(path, maze, expanded):
     pathArray = list(path)
     x = start[0][0]
     y = start[0][1]
@@ -166,6 +173,7 @@ def output(path, maze):
     for row in maze:
         for i in row:
             solution.write(i)
+    solution.write('\n' + str(expanded))
 
 
 choice = 0
